@@ -4,12 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ICP Targeting Scorecard — Free | LeadVault by Meer HQ</title>
-<script>
-  window.va = window.va || function () { 
-    (window.vaq = window.vaq || []).push(arguments); 
-  };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
@@ -568,8 +562,8 @@ footer {
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="logo">Lead<span>Vault</span>™ <span style="color:#444;font-weight:400;font-size:0.8rem;">by Meer HQ</span></a>
-  <a href="#quiz" class="nav-cta">Get Your Free Score</a>
+  <span class="logo" onclick="scrollToQuiz()" style="cursor:pointer;">Lead<span>Vault</span>™ <span style="color:#444;font-weight:400;font-size:0.8rem;">by Meer HQ</span></span>
+  <button class="nav-cta" onclick="scrollToQuiz()">Get Your Free Score →</button>
 </nav>
 
 <!-- HERO -->
@@ -577,7 +571,7 @@ footer {
   <div class="eyebrow">Free Diagnostic Tool</div>
   <h1>Is Your Prospect List<br><em>Killing Your Reply Rate?</em></h1>
   <p class="subhead">Answer 7 quick questions. Get your ICP Targeting Score in 60 seconds — and a personalised breakdown of exactly what's costing you deals.</p>
-  <a href="#quiz" class="nav-cta" style="padding:0.9rem 2rem;font-size:0.85rem;display:inline-block;letter-spacing:0.06em;">Take The Free Scorecard →</a>
+  <button class="nav-cta" onclick="scrollToQuiz()" style="padding:0.9rem 2rem;font-size:0.9rem;letter-spacing:0.06em;border:none;cursor:pointer;">Score My Prospect List — It's Free →</button>
   <div class="hero-badges">
     <div class="badge"><b>60 sec</b> to complete</div>
     <div class="badge"><b>Free</b> · no credit card</div>
@@ -638,7 +632,7 @@ footer {
         </div>
       </div>
     </div>
-    <div class="unlock-pill">🔒 Answer 7 Questions — Unlock Your Real Score →</div>
+    <button class="unlock-pill" onclick="scrollToQuiz()">🔒 Answer 7 Questions — Unlock Your Real Score →</button>
   </div>
 </section>
 
@@ -795,7 +789,7 @@ footer {
     </div>
     <div class="q-nav">
       <button class="btn-back" onclick="backQ('q6','q5')">← Back</button>
-      <button class="btn-next" onclick="nextQ('q6','q7')" id="next-q7" disabled>Next →</button>
+      <button class="btn-next" onclick="nextQ('q6','q7')" id="next-q6" disabled>Next →</button>
     </div>
   </div>
 
@@ -854,7 +848,7 @@ footer {
     <div class="cta-box">
       <h3>Let Us Fix This For You.</h3>
       <p id="ctaText">Based on your score, the fastest path forward is a done-for-you verified lead list built exactly to your ICP. First order includes 20 bonus leads.</p>
-      <a href="https://meerhq.io/leadvault" target="_blank">Claim Your LeadVault Order →</a>
+      <a href="https://lead-vault-eight.vercel.app/" target="_blank">Order LeadVault Now →</a>
     </div>
   </div>
 
@@ -888,7 +882,18 @@ footer {
         </div>
       </div>
     </div>
+    <div style="margin-top:2.5rem;">
+      <button class="nav-cta" onclick="scrollToQuiz()" style="padding:0.9rem 2rem;font-size:0.85rem;letter-spacing:0.06em;border:none;cursor:pointer;margin-top:2.5rem;display:inline-block;">Get All 3 Free — Take The Scorecard →</button>
+    </div>
   </div>
+</section>
+
+<!-- BOTTOM CTA STRIP -->
+<section style="background:var(--black);padding:4rem 2rem;text-align:center;border-top:3px solid var(--orange);">
+  <p style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--orange);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.75rem;">60 seconds. Free. Instant results.</p>
+  <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(1.7rem,4vw,2.6rem);color:var(--white);line-height:1.2;margin-bottom:1rem;">Find Out If Your Prospect List<br>Is Costing You Deals.</h2>
+  <p style="color:#888;font-size:0.9rem;margin-bottom:2rem;max-width:440px;margin-left:auto;margin-right:auto;">Answer 7 questions. Get a personalised ICP score + a breakdown of every gap hurting your pipeline.</p>
+  <button class="nav-cta" onclick="scrollToQuiz()" style="padding:1rem 2.5rem;font-size:0.9rem;letter-spacing:0.06em;border:none;cursor:pointer;">Take The Free Scorecard →</button>
 </section>
 
 <footer>
@@ -904,7 +909,7 @@ footer {
       </div>
       <div class="footer-col">
         <div class="footer-col-label">Contact</div>
-        <a href="mailto:info@meerhq.io">info@meerhq.io</a>
+        <a href="mailto:contact@meerhq.io">contact@meerhq.io</a>
         <a href="mailto:wearemeerhq@gmail.com">wearemeerhq@gmail.com</a>
       </div>
       <div class="footer-col">
@@ -916,23 +921,50 @@ footer {
     </div>
     <div class="footer-bottom">
       <span>© 2026 Meer HQ. All rights reserved.</span>
-      <span><a href="#">Privacy Policy</a> &nbsp;·&nbsp; <a href="https://www.meerhq.io/leadvault" target="_blank">Order LeadVault →</a></span>
+      <span><a href="#">Privacy Policy</a> &nbsp;·&nbsp; <a href="https://lead-vault-eight.vercel.app/" target="_blank">Order LeadVault →</a></span>
     </div>
   </div>
 </footer>
 
 <script>
+function scrollToQuiz() {
+  document.getElementById('quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─────────────────────────────────────────────
+// CONFIG
+// When hosted on Vercel this calls the serverless
+// function at /api/submit — no changes needed.
+// ─────────────────────────────────────────────
+const WORKER_URL    = '/api/submit';
+const LEADVAULT_URL = 'https://lead-vault-eight.vercel.app/';
+// ─────────────────────────────────────────────
+
 const answers = {};
-const scores = {};
+const scores  = {};
 
 function selectOption(btn, qId, label, points) {
   const card = document.getElementById(qId);
   card.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
   answers[qId] = label;
-  scores[qId] = points;
-  const nextBtn = document.getElementById('next-' + qId) || document.getElementById('next-q7-btn');
-  if (nextBtn) nextBtn.disabled = false;
+  scores[qId]  = points;
+  // Enable this question's specific next button only
+  const nextBtn = document.getElementById('next-' + qId);
+  if (nextBtn) {
+    nextBtn.disabled = false;
+    nextBtn.style.background = 'var(--orange)';
+    nextBtn.style.cursor     = 'pointer';
+  }
+  // Q7 uses a different ID convention — handle separately
+  if (qId === 'q7') {
+    const q7btn = document.getElementById('next-q7-btn');
+    if (q7btn) {
+      q7btn.disabled = false;
+      q7btn.style.background = 'var(--orange)';
+      q7btn.style.cursor     = 'pointer';
+    }
+  }
 }
 
 function nextQ(fromId, toId) {
@@ -951,11 +983,10 @@ function backQ(fromId, toId) {
 }
 
 function updateProgress() {
-  const total = 7;
   const done = Object.keys(answers).length;
-  const pct = Math.round((done / total) * 100);
+  const pct  = Math.round((done / 7) * 100);
   document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressLabel').textContent = done + ' / ' + total;
+  document.getElementById('progressLabel').textContent = done + ' / 7';
 }
 
 function showContactStep() {
@@ -967,100 +998,129 @@ function showContactStep() {
   window.scrollTo({ top: document.getElementById('quiz').offsetTop - 80, behavior: 'smooth' });
 }
 
-function showResult() {
-  const email = document.getElementById('emailInput').value.trim();
-  const name = document.getElementById('firstName').value.trim();
+// ── SCORE CALCULATOR ──────────────────────────
+function calcScore() {
+  const rawScore = Object.values(scores).reduce((a, b) => a + b, 0);
+  return Math.min(100, Math.round((rawScore / 95) * 100));
+}
+
+// ── BREAKDOWN BUILDER ─────────────────────────
+function buildBreakdown() {
+  return [
+    {
+      label: 'ICP Documented',
+      answer: answers['q2'], pts: scores['q2'], max: 20,
+      pass: scores['q2'] >= 15,
+      fix: scores['q2'] < 15
+        ? 'Write your ICP with all 4 criteria: industry, title, company size, geography. Use the ICP Template we\'re sending you.'
+        : 'Solid — your targeting starts with a clear foundation.'
+    },
+    {
+      label: 'Email Verification',
+      answer: answers['q4'], pts: scores['q4'], max: 20,
+      pass: scores['q4'] >= 15,
+      fix: scores['q4'] < 15
+        ? 'Unverified emails damage your sender reputation permanently. Verify every contact before sending — or use LeadVault which does this for you.'
+        : 'Good — verified data protects your sender score.'
+    },
+    {
+      label: 'List Building Process',
+      answer: answers['q3'], pts: scores['q3'], max: 15,
+      pass: scores['q3'] >= 12,
+      fix: scores['q3'] < 12
+        ? 'Generic databases return generic results. Custom ICP-targeted research converts 3× better.'
+        : 'Strong process — custom research pays off.'
+    },
+    {
+      label: 'Reply Rate Performance',
+      answer: answers['q5'], pts: scores['q5'], max: 15,
+      pass: scores['q5'] >= 10,
+      fix: scores['q5'] < 10
+        ? 'Low reply rates trace back to list quality and targeting — not copy. Fix the list first.'
+        : 'Above benchmark — keep optimising the sequence.'
+    },
+    {
+      label: 'Prospecting Time',
+      answer: answers['q6'], pts: scores['q6'], max: 15,
+      pass: scores['q6'] >= 12,
+      fix: scores['q6'] < 12
+        ? 'Time researching is time not closing. Outsource or automate prospecting to reclaim selling hours.'
+        : 'Efficient — your team\'s time is in the right place.'
+    }
+  ];
+}
+
+// ── WORKER PROXY: single call handles contact + email ──────────
+async function submitToWorker(firstName, email, score, role, challenge, scoreBand, breakdown) {
+  try {
+    const res = await fetch(WORKER_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ firstName, email, score, role, challenge, scoreBand, breakdown }),
+    });
+    const data = await res.json();
+    return { ok: res.ok, data };
+  } catch (e) {
+    console.error('Worker error:', e);
+    return { ok: false, data: null };
+  }
+}
+
+// ── MAIN SUBMIT + RENDER ──────────────────────
+async function showResult() {
+  const email     = document.getElementById('emailInput').value.trim();
+  const firstName = document.getElementById('firstName').value.trim();
+
   if (!email || !email.includes('@')) {
     document.getElementById('emailInput').style.borderColor = 'var(--orange)';
     document.getElementById('emailInput').focus();
     return;
   }
 
-  // Calculate score
-  const rawScore = Object.values(scores).reduce((a, b) => a + b, 0);
-  // Max possible: q1=10, q2=20, q3=15, q4=20, q5=15, q6=15 = 95. Normalise to 100.
-  const score = Math.min(100, Math.round((rawScore / 95) * 100));
+  // Disable button, show loading state
+  const btn = document.querySelector('.submit-btn');
+  btn.textContent = 'Calculating your score...';
+  btn.disabled = true;
 
+  const score     = calcScore();
+  const breakdown = buildBreakdown();
+
+  // ① Show result UI immediately (don't wait on API)
   document.getElementById('contactStep').classList.remove('active');
   document.getElementById('resultStep').classList.add('active');
   document.getElementById('progressFill').style.width = '100%';
   document.getElementById('progressLabel').textContent = 'Complete';
 
-  // Animate score
+  // Animate score count-up
   let current = 0;
-  const target = score;
   const interval = setInterval(() => {
-    current = Math.min(current + 2, target);
+    current = Math.min(current + 2, score);
     document.getElementById('scoreDisplay').innerHTML = current + '<span>/100</span>';
-    if (current >= target) clearInterval(interval);
+    if (current >= score) clearInterval(interval);
   }, 18);
 
-  // Grade
+  // Grade text
   let grade, summary, ctaText;
   if (score >= 80) {
-    grade = '🔥 Strong Foundation — Room to Scale';
+    grade   = '🔥 Strong Foundation — Room to Scale';
     summary = 'Your targeting is solid. The gap is speed and volume — you need a faster way to fill the pipeline at this quality level.';
-    ctaText = 'Your setup is strong. LeadVault adds fuel — we handle the research at scale so your team stays focused on closing.';
+    ctaText = 'LeadVault adds fuel to a strong system. We handle research at scale so your team stays focused on closing.';
   } else if (score >= 55) {
-    grade = '⚠️ Partial System — Fixable Gaps';
-    summary = 'You have some pieces in place but critical gaps are leaking reply rate and wasting outreach budget. Let\'s close them.';
-    ctaText = 'A few targeted fixes will significantly lift your reply rate. Start with a verified list built to your exact ICP — that\'s the fastest win.';
+    grade   = '⚠️ Partial System — Fixable Gaps';
+    summary = 'You have some pieces in place but critical gaps are leaking reply rate and burning outreach budget.';
+    ctaText = 'A few targeted fixes will significantly lift your reply rate. A verified ICP-matched list is the fastest win available to you right now.';
   } else {
-    grade = '🚨 High Risk — Prospecting Is Costing You Deals';
-    summary = 'Your current setup has multiple gaps that are actively hurting your pipeline. The good news: they\'re all fixable quickly.';
-    ctaText = 'Don\'t send another cold email until you fix the foundation. LeadVault delivers a verified, ICP-targeted list in 24 hours — built for you, not a recycled database.';
+    grade   = '🚨 High Risk — Prospecting Is Costing You Deals';
+    summary = 'Multiple gaps are actively hurting your pipeline. The good news: every single one is fixable quickly.';
+    ctaText = 'Don\'t send another cold email until you fix the foundation. LeadVault delivers verified, ICP-targeted leads in 24 hours — built for you, not a recycled database.';
   }
 
-  document.getElementById('scoreGrade').textContent = grade;
+  document.getElementById('scoreGrade').textContent   = grade;
   document.getElementById('resultSummary').textContent = summary;
-  document.getElementById('ctaText').textContent = ctaText;
+  document.getElementById('ctaText').textContent       = ctaText;
 
-  // Breakdown rows
-  const breakdown = [
-    {
-      label: 'ICP Documented',
-      answer: answers['q2'],
-      pts: scores['q2'],
-      max: 20,
-      pass: scores['q2'] >= 15,
-      fix: scores['q2'] < 15 ? 'Write down your ICP with all 4 criteria: industry, title, company size, geography. Use the template we\'re sending you.' : 'Solid — your targeting starts with a clear foundation.'
-    },
-    {
-      label: 'Email Verification',
-      answer: answers['q4'],
-      pts: scores['q4'],
-      max: 20,
-      pass: scores['q4'] >= 15,
-      fix: scores['q4'] < 15 ? 'Every unverified email risks your sender reputation. Verify all contacts before any campaign — or use a service that does it for you.' : 'Good — verified data protects your sender score.'
-    },
-    {
-      label: 'List Building Process',
-      answer: answers['q3'],
-      pts: scores['q3'],
-      max: 15,
-      pass: scores['q3'] >= 12,
-      fix: scores['q3'] < 12 ? 'Generic databases give generic results. Custom, ICP-targeted research is 3× more likely to convert.' : 'Strong process — custom research pays off.'
-    },
-    {
-      label: 'Reply Rate Performance',
-      answer: answers['q5'],
-      pts: scores['q5'],
-      max: 15,
-      pass: scores['q5'] >= 10,
-      fix: scores['q5'] < 10 ? 'Low reply rates almost always trace back to targeting or data quality — not your copy. Fix the list first.' : 'Above benchmark — keep optimising the sequence.'
-    },
-    {
-      label: 'Prospecting Time Investment',
-      answer: answers['q6'],
-      pts: scores['q6'],
-      max: 15,
-      pass: scores['q6'] >= 12,
-      fix: scores['q6'] < 12 ? 'Time spent researching is time not spent closing. Outsource or automate prospecting to reclaim selling hours.' : 'Efficient — your team\'s time is in the right place.'
-    }
-  ];
-
-  const container = document.getElementById('breakdownRows');
-  container.innerHTML = breakdown.map(row => `
+  // Render breakdown rows
+  document.getElementById('breakdownRows').innerHTML = breakdown.map(row => `
     <div class="breakdown-row">
       <div class="br-status ${row.pass ? 'br-pass' : 'br-fail'}">${row.pass ? '✓' : '✗'}</div>
       <div class="br-text">
@@ -1071,10 +1131,34 @@ function showResult() {
     </div>
   `).join('');
 
-  // Log lead data (connect to Brevo/webhook in production)
-  console.log('Lead:', { name, email, score, answers, scores });
-
   window.scrollTo({ top: document.getElementById('quiz').offsetTop - 80, behavior: 'smooth' });
+
+  // ② Fire Worker call in background (non-blocking)
+  const role      = answers['q1'] || '';
+  const challenge = answers['q7'] || '';
+  const scoreBand = score >= 80 ? 'Strong Foundation'
+                  : score >= 55 ? 'Partial System — Fixable Gaps'
+                  : 'High Risk — Prospecting Is Costing You Deals';
+
+  const { ok: workerOk } = await submitToWorker(
+    firstName, email, score, role, challenge, scoreBand, breakdown
+  );
+
+  // ③ Show delivery confirmation banner
+  const banner = document.createElement('div');
+  banner.style.cssText = `
+    background:var(--orange);color:#fff;padding:1rem 1.5rem;
+    font-family:'JetBrains Mono',monospace;font-size:0.78rem;
+    letter-spacing:0.04em;text-align:center;margin-bottom:1.5rem;
+  `;
+  banner.textContent = workerOk
+    ? `✓ Your scorecard & bonus resources are on their way to ${email}`
+    : `Your score is ready above. Check your inbox at ${email} — delivery may take a moment.`;
+
+  const resultHeader = document.querySelector('.result-header');
+  if (resultHeader) resultHeader.insertAdjacentElement('afterend', banner);
+
+  console.log('Worker response ok:', workerOk);
 }
 </script>
 </body>

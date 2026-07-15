@@ -1,14 +1,23 @@
 // /api/submit.js
-// Vercel serverless function. Receives the quiz results from the front end
-// and sends the full scorecard to the lead via Brevo's transactional email API.
+// Vercel serverless function. Receives the quiz results from the front end,
+// sends the full scorecard to the lead via Brevo's transactional email API,
+// AND saves them as a Brevo Contact so they're tracked for future follow-up.
 //
 // SETUP:
 // 1. In Vercel: Project → Settings → Environment Variables, add:
 //      BREVO_API_KEY   = your Brevo API key (Settings → SMTP & API → API Keys, in Brevo)
 //      SENDER_EMAIL    = an email address verified in Brevo (Senders, Domains & Dedicated IPs)
 //      SENDER_NAME     = e.g. "LeadVault by Meer HQ"
+//      BREVO_LIST_ID   = the numeric ID of a Brevo Contacts list (Contacts → Lists in Brevo —
+//                        create one first if you haven't, e.g. "LeadVault Scorecard Leads")
 //      NOTIFY_EMAIL    = (optional) your own email, to get a copy of every new lead
 // 2. Redeploy. Vercel auto-detects /api/*.js as serverless functions — no extra config needed.
+//
+// NOTE on custom attributes (SCORE, ROLE, CHALLENGE, SCORE_BAND below): Brevo silently
+// ignores any attribute that doesn't already exist in your account — it won't error, the
+// contact just won't have that field. If you want those visible/filterable in Brevo, create
+// them first: Contacts → Settings → Contact attributes → Add a new attribute (as "Normal"
+// text/number attributes, matching the names below).
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -25,6 +34,7 @@ module.exports = async function handler(req, res) {
   const SENDER_EMAIL   = process.env.SENDER_EMAIL;
   const SENDER_NAME    = process.env.SENDER_NAME || 'LeadVault';
   const NOTIFY_EMAIL   = process.env.NOTIFY_EMAIL;
+  const BREVO_LIST_ID  = process.env.BREVO_LIST_ID;
 
   if (!BREVO_API_KEY || !SENDER_EMAIL) {
     console.error('Missing BREVO_API_KEY or SENDER_EMAIL env vars');
@@ -130,6 +140,40 @@ module.exports = async function handler(req, res) {
           <p>Name: ${name}<br/>Email: ${email}<br/>Score: ${score}/100 (${scoreBand})<br/>
           Role: ${role}<br/>Challenge: ${challenge}</p>`,
       }).catch(e => console.error('Notify email failed:', e));
+    }
+
+    // 3. Save/update this person as a Brevo Contact, so they're tracked for
+    // future email campaigns — not just a one-off transactional send.
+    // Best-effort: a failure here should never block the person from getting
+    // their scorecard email, which already succeeded above.
+    if (BREVO_LIST_ID) {
+      fetch('https://api.brevo.com/v3/contacts', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'content-type': 'application/json',
+          'api-key': BREVO_API_KEY,
+        },
+        body: JSON.stringify({
+          email,
+          listIds: [Number(BREVO_LIST_ID)],
+          updateEnabled: true, // upsert — safe to call again if they retake the quiz
+          attributes: {
+            FIRSTNAME: name,
+            SCORE: score,
+            SCORE_BAND: scoreBand || '',
+            ROLE: role || '',
+            CHALLENGE: challenge || '',
+          },
+        }),
+      }).then(async contactRes => {
+        if (!contactRes.ok) {
+          const errText = await contactRes.text();
+          console.error('Brevo contact create/update failed:', contactRes.status, errText);
+        }
+      }).catch(e => console.error('Brevo contact request failed:', e));
+    } else {
+      console.warn('BREVO_LIST_ID not set — lead was emailed but NOT saved as a Brevo Contact.');
     }
 
     return res.status(200).json({ ok: true });

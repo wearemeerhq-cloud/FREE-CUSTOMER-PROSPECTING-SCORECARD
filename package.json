@@ -1,0 +1,21 @@
+{
+  "name": "free-icp-targeted-scorecard",
+  "version": "1.0.0",
+  "description": "ICP Targeting Scorecard - Free diagnostic tool",
+  "private": true,
+  "scripts": {
+    "lint": "echo 'No linting configured for static HTML project'",
+    "test": "echo 'No tests configured for static HTML project'"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.4.1"
+  },
+  "keywords": [
+    "icp",
+    "targeting",
+    "scorecard",
+    "analytics"
+  ],
+  "author": "Meer HQ",
+  "license": "UNLICENSED"
+}

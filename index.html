@@ -826,6 +826,11 @@ footer {
     <div class="contact-fields">
       <input type="text" id="firstName" placeholder="First name" autocomplete="given-name" />
       <input type="email" id="emailInput" placeholder="Work email address" autocomplete="email" />
+      <input type="text" id="jobTitleInput" placeholder="Job title" autocomplete="organization-title" />
+      <input type="text" id="companyInput" placeholder="Company name" autocomplete="organization" />
+      <input type="url" id="websiteInput" placeholder="Company website" autocomplete="url" />
+      <input type="tel" id="phoneInput" placeholder="Phone number (optional)" autocomplete="tel" />
+      <input type="text" id="linkedinInput" placeholder="LinkedIn profile URL (optional)" autocomplete="off" />
     </div>
     <button class="submit-btn" onclick="showResult()">Reveal My Score →</button>
     <p class="privacy-note">No spam. No pitch cadence. Just your results. Unsubscribe anytime.</p>
@@ -1054,12 +1059,12 @@ function buildBreakdown() {
 }
 
 // ── WORKER PROXY: single call handles contact + email ──────────
-async function submitToWorker(firstName, email, score, role, challenge, scoreBand, breakdown) {
+async function submitToWorker(firstName, email, score, role, challenge, scoreBand, breakdown, jobTitle, company, website, phone, linkedin) {
   try {
     const res = await fetch(WORKER_URL, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ firstName, email, score, role, challenge, scoreBand, breakdown }),
+      body: JSON.stringify({ firstName, email, score, role, challenge, scoreBand, breakdown, jobTitle, company, website, phone, linkedin }),
     });
 
     // Only attempt to parse JSON if the response actually claims to be JSON.
@@ -1088,10 +1093,30 @@ async function submitToWorker(firstName, email, score, role, challenge, scoreBan
 async function showResult() {
   const email     = document.getElementById('emailInput').value.trim();
   const firstName = document.getElementById('firstName').value.trim();
+  const jobTitle  = document.getElementById('jobTitleInput').value.trim();
+  const company   = document.getElementById('companyInput').value.trim();
+  const website   = document.getElementById('websiteInput').value.trim();
+  const phone     = document.getElementById('phoneInput').value.trim();     // optional
+  const linkedin  = document.getElementById('linkedinInput').value.trim(); // optional
 
   if (!email || !email.includes('@')) {
     document.getElementById('emailInput').style.borderColor = 'var(--orange)';
     document.getElementById('emailInput').focus();
+    return;
+  }
+  if (!jobTitle) {
+    document.getElementById('jobTitleInput').style.borderColor = 'var(--orange)';
+    document.getElementById('jobTitleInput').focus();
+    return;
+  }
+  if (!company) {
+    document.getElementById('companyInput').style.borderColor = 'var(--orange)';
+    document.getElementById('companyInput').focus();
+    return;
+  }
+  if (!website) {
+    document.getElementById('websiteInput').style.borderColor = 'var(--orange)';
+    document.getElementById('websiteInput').focus();
     return;
   }
 
@@ -1159,7 +1184,8 @@ async function showResult() {
                   : 'High Risk — Prospecting Is Costing You Deals';
 
   const { ok: workerOk } = await submitToWorker(
-    firstName, email, score, role, challenge, scoreBand, breakdown
+    firstName, email, score, role, challenge, scoreBand, breakdown,
+    jobTitle, company, website, phone, linkedin
   );
 
   // ③ Show delivery confirmation banner

@@ -1,7 +1,14 @@
 // /api/submit.js
 // Vercel serverless function. Receives the quiz results from the front end,
-// sends the full scorecard to the lead via Brevo's transactional email API,
-// AND saves them as a Brevo Contact so they're tracked for future follow-up.
+// sends the full scorecard (+ 3 bonus PDF attachments) to the lead via
+// Brevo's transactional email API, AND saves them as a Brevo Contact so
+// they're tracked for future follow-up.
+//
+// The 3 bonus PDFs (ICP Definition Template, 3 Prospecting Mistakes Guide,
+// Reply Rate Benchmark Table) are the same generic files for every lead —
+// their base64 content lives in ./_attachments.js, generated once from the
+// source PDFs. If you ever need to update those PDFs, regenerate that file.
+const { ICP_TEMPLATE_B64, MISTAKES_GUIDE_B64, BENCHMARK_TABLE_B64 } = require('./_attachments.js');
 //
 // SETUP:
 // 1. In Vercel: Project → Settings → Environment Variables, add:
@@ -73,6 +80,10 @@ module.exports = async function handler(req, res) {
       <p style="font-size:15px;color:#333;line-height:1.6;">
         Here's your full ICP Targeting Scorecard — your results plus exactly what to fix first.
       </p>
+      <p style="font-size:13px;color:#555;line-height:1.6;">
+        Also attached: your ICP Definition Template, the 3 Prospecting Mistakes Guide, and the Reply Rate
+        Benchmark Table — the 3 free resources promised on the scorecard page.
+      </p>
 
       <div style="text-align:center;margin:28px 0;">
         <div style="font-size:48px;font-weight:800;color:#0D0D0D;">
@@ -118,12 +129,18 @@ module.exports = async function handler(req, res) {
     });
 
   try {
-    // 1. Email the scorecard to the lead
+    // 1. Email the scorecard to the lead — plus the 3 bonus PDFs promised
+    // on the landing page ("You Also Get These Free")
     const leadRes = await sendEmail({
       sender: { name: SENDER_NAME, email: SENDER_EMAIL },
       to: [{ email, name }],
       subject: `${name}, your ICP Targeting Score: ${score}/100`,
       htmlContent,
+      attachment: [
+        { name: 'ICP_Definition_Template.pdf', content: ICP_TEMPLATE_B64 },
+        { name: '3_Prospecting_Mistakes_Guide.pdf', content: MISTAKES_GUIDE_B64 },
+        { name: 'Reply_Rate_Benchmark_Table.pdf', content: BENCHMARK_TABLE_B64 },
+      ],
     });
 
     if (!leadRes.ok) {

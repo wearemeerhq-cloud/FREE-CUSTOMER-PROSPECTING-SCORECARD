@@ -13,18 +13,20 @@
 //      NOTIFY_EMAIL    = (optional) your own email, to get a copy of every new lead
 // 2. Redeploy. Vercel auto-detects /api/*.js as serverless functions — no extra config needed.
 //
-// NOTE on custom attributes (SCORE, ROLE, CHALLENGE, SCORE_BAND below): Brevo silently
-// ignores any attribute that doesn't already exist in your account — it won't error, the
-// contact just won't have that field. If you want those visible/filterable in Brevo, create
-// them first: Contacts → Settings → Contact attributes → Add a new attribute (as "Normal"
-// text/number attributes, matching the names below).
+// NOTE on custom attributes (SCORE, ROLE, CHALLENGE, SCORE_BAND, JOB_TITLE, COMPANY,
+// WEBSITE, PHONE, LINKEDIN below): Brevo silently ignores any attribute that doesn't
+// already exist in your account — it won't error, the contact just won't have that
+// field. If you want those visible/filterable in Brevo, create them first: Contacts →
+// Settings → Contact attributes → Add a new attribute (as "Normal" text/number
+// attributes, matching the names above exactly, e.g. JOB_TITLE not "Job Title").
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { firstName, email, score, role, challenge, scoreBand, breakdown } = req.body || {};
+  const { firstName, email, score, role, challenge, scoreBand, breakdown,
+          jobTitle, company, website, phone, linkedin } = req.body || {};
 
   if (!email || !email.includes('@')) {
     return res.status(400).json({ error: 'Valid email is required' });
@@ -141,7 +143,10 @@ module.exports = async function handler(req, res) {
           subject: `New LeadVault lead: ${name} (${score}/100)`,
           htmlContent: `<p>New submission:</p>
             <p>Name: ${name}<br/>Email: ${email}<br/>Score: ${score}/100 (${scoreBand})<br/>
-            Role: ${role}<br/>Challenge: ${challenge}</p>`,
+            Role (from quiz): ${role}<br/>Challenge: ${challenge}<br/>
+            Job title: ${jobTitle || '—'}<br/>Company: ${company || '—'}<br/>
+            Website: ${website || '—'}<br/>Phone: ${phone || '—'}<br/>
+            LinkedIn: ${linkedin || '—'}</p>`,
         });
       } catch (e) {
         console.error('Notify email failed:', e);
@@ -176,6 +181,11 @@ module.exports = async function handler(req, res) {
               SCORE_BAND: scoreBand || '',
               ROLE: role || '',
               CHALLENGE: challenge || '',
+              JOB_TITLE: jobTitle || '',
+              COMPANY: company || '',
+              WEBSITE: website || '',
+              PHONE: phone || '',
+              LINKEDIN: linkedin || '',
             },
           }),
         });

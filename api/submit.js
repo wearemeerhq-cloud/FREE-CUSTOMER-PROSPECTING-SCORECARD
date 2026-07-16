@@ -130,48 +130,62 @@ module.exports = async function handler(req, res) {
       return res.status(502).json({ error: 'Failed to send scorecard email' });
     }
 
-    // 2. Optional: notify yourself of the new lead (non-blocking, failures ignored)
+    // 2. Optional: notify yourself of the new lead. Also awaited now, for
+    // the same reason as step 3 below — Vercel can kill an un-awaited
+    // request the moment the response is sent.
     if (NOTIFY_EMAIL) {
-      sendEmail({
-        sender: { name: SENDER_NAME, email: SENDER_EMAIL },
-        to: [{ email: NOTIFY_EMAIL }],
-        subject: `New LeadVault lead: ${name} (${score}/100)`,
-        htmlContent: `<p>New submission:</p>
-          <p>Name: ${name}<br/>Email: ${email}<br/>Score: ${score}/100 (${scoreBand})<br/>
-          Role: ${role}<br/>Challenge: ${challenge}</p>`,
-      }).catch(e => console.error('Notify email failed:', e));
+      try {
+        await sendEmail({
+          sender: { name: SENDER_NAME, email: SENDER_EMAIL },
+          to: [{ email: NOTIFY_EMAIL }],
+          subject: `New LeadVault lead: ${name} (${score}/100)`,
+          htmlContent: `<p>New submission:</p>
+            <p>Name: ${name}<br/>Email: ${email}<br/>Score: ${score}/100 (${scoreBand})<br/>
+            Role: ${role}<br/>Challenge: ${challenge}</p>`,
+        });
+      } catch (e) {
+        console.error('Notify email failed:', e);
+      }
     }
 
     // 3. Save/update this person as a Brevo Contact, so they're tracked for
     // future email campaigns — not just a one-off transactional send.
-    // Best-effort: a failure here should never block the person from getting
-    // their scorecard email, which already succeeded above.
+    //
+    // IMPORTANT: this MUST be awaited, not fire-and-forget. Vercel can freeze
+    // or terminate a serverless function's execution as soon as it sends its
+    // response — any request still "in flight" that wasn't explicitly awaited
+    // can get killed mid-request before it actually reaches Brevo. Wrapping
+    // in try/catch keeps a contact-save failure from ever blocking the
+    // person's scorecard email, which has already succeeded by this point.
     if (BREVO_LIST_ID) {
-      fetch('https://api.brevo.com/v3/contacts', {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-          'content-type': 'application/json',
-          'api-key': BREVO_API_KEY,
-        },
-        body: JSON.stringify({
-          email,
-          listIds: [Number(BREVO_LIST_ID)],
-          updateEnabled: true, // upsert — safe to call again if they retake the quiz
-          attributes: {
-            FIRSTNAME: name,
-            SCORE: score,
-            SCORE_BAND: scoreBand || '',
-            ROLE: role || '',
-            CHALLENGE: challenge || '',
+      try {
+        const contactRes = await fetch('https://api.brevo.com/v3/contacts', {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'content-type': 'application/json',
+            'api-key': BREVO_API_KEY,
           },
-        }),
-      }).then(async contactRes => {
+          body: JSON.stringify({
+            email,
+            listIds: [Number(BREVO_LIST_ID)],
+            updateEnabled: true, // upsert — safe to call again if they retake the quiz
+            attributes: {
+              FIRSTNAME: name,
+              SCORE: score,
+              SCORE_BAND: scoreBand || '',
+              ROLE: role || '',
+              CHALLENGE: challenge || '',
+            },
+          }),
+        });
         if (!contactRes.ok) {
           const errText = await contactRes.text();
           console.error('Brevo contact create/update failed:', contactRes.status, errText);
         }
-      }).catch(e => console.error('Brevo contact request failed:', e));
+      } catch (e) {
+        console.error('Brevo contact request failed:', e);
+      }
     } else {
       console.warn('BREVO_LIST_ID not set — lead was emailed but NOT saved as a Brevo Contact.');
     }

@@ -103,7 +103,7 @@ module.exports = async function handler(req, res) {
       </p>
 
       <div style="text-align:center;margin-top:32px;">
-        <a href="https://meerhq-leadvault.vercel.app/"
+        <a href="https://leadvault.meerhq.io/"
            style="background:#E8440A;color:#fff;text-decoration:none;font-weight:700;
                   padding:14px 28px;display:inline-block;font-family:monospace;
                   font-size:13px;letter-spacing:0.05em;text-transform:uppercase;">
